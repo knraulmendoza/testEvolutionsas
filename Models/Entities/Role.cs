@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using testEvolution.Models.Base;
+using testEvolution.Models.Enums;
 
 namespace testEvolution.Models.Entities
 {
     public class Role : Model<Role>
     {
-        [Required]
-        [MaxLength(30)]
-        [MinLength(4)]
         public string Name { get; set; }
-        [MaxLength(300)]
         public string Description { get; set; }
+        public State State { get; set; }
+
+        public Role(){}
+        public Role(SqlDataReader reader){
+            Name = reader["name"].ToString();
+            Description = reader["description"].ToString()??"";
+            State = (State)Convert.ToInt32(reader["state"]);
+        }
     }
 }

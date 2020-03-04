@@ -7,7 +7,7 @@ namespace testEvolution.Interfaces
 {
     public interface IData<T>
     {
-        public T Find(object id);
+        public T Find(int id);
         public IList<T> GetAll();
         public T Add(T model);
         public T Edit(int id, T model);

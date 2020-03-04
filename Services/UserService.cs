@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using evolutionPrueba.Services;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +14,28 @@ namespace testEvolution.Services
 {
     public class UserService : BaseData, IData<User>
     {
+        public readonly RoleService _roleService;
+        public readonly UserRoleService _roleUserService;
+        public UserService(){
+            _roleService = new RoleService();
+            _roleUserService = new UserRoleService();
+        }
         public User Add(User user)
         {
             if(user == null) return null;
             //INSERT INTO users OUTPUT INSERTED.* VALUES ('aaaa', 'asdsdad', 1)
             sqlCommand.CommandText = "INSERT INTO users VALUES(@user_name, @password, @state)";
             sqlCommand.Parameters.AddWithValue("@user_name", user.Username);
-            sqlCommand.Parameters.AddWithValue("@password", user.Password);// new PasswordHasher().HashPassword(model.Password));
+            sqlCommand.Parameters.AddWithValue("@password", new PasswordHasher().HashPassword(user.Password));// new PasswordHasher().HashPassword(model.Password));
             sqlCommand.Parameters.AddWithValue("@state", State.ACTIVO);
             try{
                 Connection.Open();
+                if(_roleService.Find(user.roleId) == null) return null;
                 int result  = sqlCommand.ExecuteNonQuery();
-                if (result > 0 ){ user.Id = GetInsert();}
+                if (result > 0 ){ 
+                    user.Id = GetInsert();
+                    if(_roleUserService.Add(new RoleUser(user.roleId, user.Id)) == null) return null;
+                }
                 return user;
             }catch(Exception e){
                 Console.WriteLine(e.Message);
@@ -36,12 +47,7 @@ namespace testEvolution.Services
         public int GetInsert(){
             sqlCommand.CommandText = "SELECT MAX(id) as id FROM users";
             reader = sqlCommand.ExecuteReader();
-            int id = 0;
-            while (reader.Read())
-            {
-                id = Convert.ToInt32(reader["id"]);
-            }
-            return id;
+            return reader.Read()?Convert.ToInt32(reader["id"]):0;
         }
 
         public User Edit(int id, User user)
@@ -65,14 +71,14 @@ namespace testEvolution.Services
 
         public User Find(User model)
         {
-            sqlCommand.CommandText = $"SELECT * FROM users where [user]='{model.Username}' AND [password]='{model.Password}' AND [state] = {Convert.ToInt32(State.ACTIVO)}";
+            sqlCommand.CommandText = $"SELECT * FROM users where user_name='{model.Username}' AND state = {Convert.ToInt32(State.ACTIVO)}";
             Connection.Open();
             reader = sqlCommand.ExecuteReader();
             User user = reader.Read()? new User(reader): null;
             Connection.Close();
-            return user;
+            return (GetPasswordHasher(user.Password, model.Password) == PasswordVerificationResult.Success)? user: null;
         }
-        public User Find(object id)
+        public User Find(int id)
         {
             sqlCommand.CommandText = $"SELECT * FROM users where id={id}";
             try
@@ -90,6 +96,9 @@ namespace testEvolution.Services
             }
         }
 
+        public PasswordVerificationResult GetPasswordHasher(string passwordHasher, string password){
+            return new PasswordHasher().VerifyHashedPassword(passwordHasher, password);
+        }
         public IList<User> GetAll()
         {
             throw new NotImplementedException();

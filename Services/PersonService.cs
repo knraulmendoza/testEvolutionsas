@@ -74,7 +74,7 @@ namespace evolutionPrueba.Services
             }
         }
 
-        public Person Find(object id)
+        public Person Find(int id)
         {
             if(id == null && Convert.ToInt32(id) < 0) return null;
             sqlCommand.CommandText = $"SELECT * FROM persons where id={id}";
@@ -103,7 +103,7 @@ namespace evolutionPrueba.Services
                 reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
                 {
-                    Person p = new Person(reader, _userService.Find(reader["user_id"]));
+                    Person p = new Person(reader, _userService.Find(Convert.ToInt32(reader["user_id"])));
                     if(p==null) return null;
                     Console.WriteLine(p.FirstLastName);
                     persons.Add(p);

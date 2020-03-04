@@ -9,9 +9,16 @@ namespace testEvolution.Models.Entities
 {
     public class RoleUser : Model<RoleUser>
     {
-        [Required]
+        
         public int Role_id { get; set; }
-        [Required]
         public int User_id { get; set; }
+        public RoleUser(){}
+
+        public RoleUser(int role_id, int user_id)
+        {
+            this.Role_id = role_id;
+            this.User_id = user_id;
+
+        }
     }
 }

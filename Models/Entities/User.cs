@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using testEvolution.Models.Base;
 using testEvolution.Models.Enums;
+using testEvolution.Helpers;
 
 namespace testEvolution.Models.Entities
 {
@@ -19,6 +21,8 @@ namespace testEvolution.Models.Entities
         public string Password { get; set; }
         // [Required]
         public State State { get; set; }
+        public string token { get; set;}
+        public int roleId { get; set;}
 
         public User(){}
         public User(SqlDataReader reader){
