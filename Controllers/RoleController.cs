@@ -1,3 +1,5 @@
+using System.Data;
+using System.Collections.Generic;
 using System;
 using evolutionPrueba.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +25,7 @@ namespace evolutionPrueba.Controllers
             return _roleService.Find(id);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public ActionResult<Role> Register([FromBody]Role role)
         {
@@ -32,13 +35,23 @@ namespace evolutionPrueba.Controllers
             if (model == null) return BadRequest(model);
             return Ok(model);
         }
+        [AllowAnonymous]
+        [Route("update")]
         [HttpPut("{id}")]
         public ActionResult<Role> Update(int id, [FromBody]Role role)
         {
+            Console.WriteLine("aja que pasa vale");
             if (_roleService.Find(id) == null) return BadRequest("role is empty ó no cumple");
             Role model = _roleService.Edit(id, role);
             if (model == null) return BadRequest(model);
             return Ok(model);
+        }
+        [AllowAnonymous]
+        [Route("getAll")]
+        [HttpGet]
+        public IEnumerable<Role> GetAll()
+        {
+            return _roleService.GetAll();
         }
     }
 }

@@ -19,10 +19,12 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="ClientApp\src\app\guards\auth.interceptor.ts" />
     <None Remove="ClientApp\src\app\helper\ApiBase.ts" />
     <None Remove="ClientApp\src\app\interfaces\interface.ts" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\guards\auth.interceptor.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\helper\ApiBase.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\interfaces\interface.ts" />
   </ItemGroup>

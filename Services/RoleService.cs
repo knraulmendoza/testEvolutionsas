@@ -68,7 +68,27 @@ namespace evolutionPrueba.Services
 
         public IList<Role> GetAll()
         {
-            throw new System.NotImplementedException();
+            IList<Role> roles = new List<Role>();
+            sqlCommand.CommandText = "SELECT * FROM roles";
+            try
+            {
+                Connection.Open();
+                reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    Role r = new Role(reader);
+                    if(r==null) return null;
+                    roles.Add(r);
+                }
+                Connection.Close();
+                return roles;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("genero una exception : " + e.Message.ToString());
+                Connection.Close();
+                return null;
+            }
         }
     }
 }

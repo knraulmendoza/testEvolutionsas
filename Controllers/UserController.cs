@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using evolutionPrueba.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,12 @@ namespace testEvolution.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly Response<User> _response;
         public UserController(IConfiguration configuration)
         {
             _userService = new UserService();
             _configuration = configuration;
+            _response = new Response<User>();
         }
         [AllowAnonymous]
         [Route("authenticate")]
@@ -44,14 +47,14 @@ namespace testEvolution.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, model.Id.ToString()),
-                new Claim(ClaimTypes.Name, model.Username)
+                new Claim(ClaimTypes.Name, model.Username),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 // Nuestro token va a durar un día
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddSeconds(10),
                 // Credenciales para generar el token usando nuestro secretykey y el algoritmo hash 256
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -60,7 +63,7 @@ namespace testEvolution.Controllers
             var createdToken = tokenHandler.CreateToken(tokenDescriptor);
             model.token = tokenHandler.WriteToken(createdToken);
             // return tokenHandler.WriteToken(createdToken);
-            return Ok(model);
+            return Ok(new Response<User>(model,true,"su registro fue exitoso"));
         }
 
         
@@ -87,6 +90,14 @@ namespace testEvolution.Controllers
             User model = _userService.Edit(id, user);
             if (model == null) return BadRequest(model);
             return Ok(model);
+        }
+
+        //[AllowAnonymous]
+        [Route("Autorization")]
+        [HttpGet]
+        public ActionResult<Boolean> Autorization()
+        {
+            return HttpContext.User.Identity.IsAuthenticated?true:false;
         }
     }
 }

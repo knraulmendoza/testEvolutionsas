@@ -1,0 +1,142 @@
+<header>
+  <nav
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
+  >
+    <div class="container">
+      <a class="navbar-brand" [routerLink]="['/']">evolutionPrueba</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target=".navbar-collapse"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="isExpanded"
+        (click)="toggle()"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
+        [ngClass]="{ show: isExpanded }"
+      >
+        <ul class="navbar-nav flex-grow">
+          <li
+            class="nav-item"
+            [routerLinkActive]="['link-active']"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <a class="nav-link text-dark" [routerLink]="['/']">Mapa</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" (click)="open(content)"
+              >Roles</a
+            >
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" (click)="showUsers(users)"
+              >Usuarios</a
+            >
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <button class="nav-link text-dark btn" (click)="logout()">Cerrar sesion</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Roles</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <input type="button" value="{{edit?'Editar':'Guardar'}}" class="btn btn-primary" (click)="openForm(form, false)">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" sortable="name">Nombre</th>
+          <th scope="col" sortable="description">Descripcion</th>
+          <th scope="col" >Estado</th>
+          <th scope="col" sortable="edit">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let role of roles; index as i">
+          <th scope="row">{{ i+1 }}</th>
+          <td>{{role.name}}</td>
+          <td>{{role.description}}</td>
+          <td>{{role.state==1?'Activo':'Inactivo'}}</td>
+          <td><a (click)="openForm(form, true, role)">editar</a></td>
+        </tr>
+        </tbody>
+      </table>
+  </div>
+</ng-template>
+<ng-template #form let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{edit?'Editar Role':'Registrar Role'}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="form-group">
+        <label for="exampleFormControlInput1">Role</label>
+        <input type="text" class="form-control" id="role" placeholder="Role" [(ngModel)]="role.name">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlInput2">Descripción</label>
+        <input type="text" class="form-control" id="description" placeholder="Descripción" [(ngModel)]="role.description">
+      </div>
+      <div class="form-group" *ngIf="edit">
+        <label for="exampleFormControlInput2">Estado</label>
+        <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="role.state">
+          <option value="1">Activo</option>
+          <option value="0">Inactivo</option>
+        </select>
+      </div>
+      <input type="button" value="{{edit?'Editar':'Guardar'}}" class="btn btn-primary" (click)="save(form)">
+  </div>
+
+</ng-template>
+
+<ng-template #users let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Usuarios</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <input type="button" value="{{edit?'Editar':'Guardar'}}" class="btn btn-primary" (click)="openForm(form, false)">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" sortable="name">Nombre</th>
+            <th scope="col">Usuario</th>
+            <!-- <th scope="col" sortable="description">Descripcion</th> -->
+            <th scope="col" >Estado</th>
+            <th scope="col" sortable="edit">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+        <!-- <tr *ngFor="let role of roles; index as i">
+          <th scope="row">{{ i+1 }}</th>
+          <td>{{role.name}}</td>
+          <td>{{role.description}}</td>
+          <td>{{role.state==1?'Activo':'Inactivo'}}</td>
+          <td><a (click)="openForm(form, true, role)">editar</a></td>
+        </tr> -->
+        </tbody>
+      </table>
+  </div>
+</ng-template>
+
+<!-- <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Launch demo modal</button> -->
+
+<router-outlet></router-outlet>

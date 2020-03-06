@@ -36,7 +36,8 @@ namespace evolutionPrueba
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateLifetime = true,
+                    ValidateAudience = true
                 };
             });
 
