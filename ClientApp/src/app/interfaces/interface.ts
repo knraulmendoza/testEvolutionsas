@@ -3,15 +3,17 @@ export interface IUser {
     username: string;
     password: string;
     state?: number;
+    roleid: number;
+    role?:IRole
 }
 
 export interface IPerson {
     id: number;
-    first_name: string;
-    second_name?: string;
-    first_last_name: string;
-    second_last_name: string;
-    user_id: number;
+    firstName: string;
+    secondName?: string;
+    firstLastName: string;
+    secondLastName: string;
+    userid: number;
     user: IUser;
 }
 

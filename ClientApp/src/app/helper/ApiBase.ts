@@ -4,14 +4,14 @@ import { HttpClient } from "@angular/common/http";
 export default class ApiBase {
     public baseUrl = 'https://localhost:5001/api/';
     public config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token') != undefined ?localStorage.getItem('token'):''}` },
+        headers: { Authorization: 'Bearer '},
     };
 
     constructor(private http: HttpClient) { }
     async get(url: string) {
         let responseJson;
         try {
-            return await this.http.get(this.baseUrl + url, this.config).toPromise();
+            return await this.http.get(this.baseUrl + url).toPromise();
             // responseJson = this.returnResponse(response);
         } catch (e) {
             return false;
@@ -20,7 +20,7 @@ export default class ApiBase {
     }
 
     async post(url: string, body: any) {
-        return await this.http.post(this.baseUrl + url, body, this.config).toPromise().then((data) => {
+        return await this.http.post(this.baseUrl + url, body).toPromise().then((data) => {
             return data;
         }).catch((error) => {
            console.log(error.response);
@@ -29,7 +29,7 @@ export default class ApiBase {
         // return this.returnResponse(response);
     }
     async put(url: string, body: any) {
-        return await this.http.put(this.baseUrl + url, body, this.config).toPromise().then((data) => {
+        return await this.http.put(this.baseUrl + url, body).toPromise().then((data) => {
             return data;
         }).catch((error) => {
             return error.response.data;

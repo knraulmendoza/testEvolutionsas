@@ -19,6 +19,7 @@ namespace evolutionPrueba.Services
             if(person == null) return null;
             //INSERT INTO users OUTPUT INSERTED.* VALUES ('aaaa', 'asdsdad', 1)
             User user = _userService.Add(person.user);
+            Console.WriteLine(user.Username);
             if(user == null) return null;
             person.UserId = user.Id;
             person.user = user;
@@ -78,6 +79,24 @@ namespace evolutionPrueba.Services
         {
             if(id == null && Convert.ToInt32(id) < 0) return null;
             sqlCommand.CommandText = $"SELECT * FROM persons where id={id}";
+            try
+            {
+                Connection.Open();
+                reader = sqlCommand.ExecuteReader();
+                Person person = reader.Read()? new Person(reader,_userService.Find(Convert.ToInt32(reader["user_id"]))):null;
+                Connection.Close();
+                return person;
+            }
+            catch (Exception)
+            {
+                Connection.Close();
+                return null;
+            }
+        }
+        public Person FindUser(int userId)
+        {
+            if(userId == null && Convert.ToInt32(userId) < 0) return null;
+            sqlCommand.CommandText = $"SELECT * FROM persons where user_id={userId}";
             try
             {
                 Connection.Open();

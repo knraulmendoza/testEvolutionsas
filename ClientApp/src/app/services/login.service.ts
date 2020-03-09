@@ -14,7 +14,16 @@ export class LoginService {
   }
   public async authenticate(user:IUser){
     let _user = await this.api.post('user/authenticate',user);
-    _user != null?localStorage.setItem('token',_user.entity.token):localStorage.setItem('token','');
+    if (_user != null){
+      localStorage.setItem('token',_user.entity.token);
+      localStorage.setItem('role',_user.entity.roleId);
+      localStorage.setItem('user',_user.entity.id);
+    }
+    else {
+      localStorage.setItem('token','');
+      localStorage.setItem('role','');
+      localStorage.setItem('user', '');
+    }
     return _user;
   }
     public async autorization() {

@@ -22,26 +22,36 @@ namespace testEvolution.Services
         }
         public User Add(User user)
         {
-            if(user == null) return null;
-            //INSERT INTO users OUTPUT INSERTED.* VALUES ('aaaa', 'asdsdad', 1)
-            sqlCommand.CommandText = "INSERT INTO users VALUES(@user_name, @password, @state)";
-            sqlCommand.Parameters.AddWithValue("@user_name", user.Username);
-            sqlCommand.Parameters.AddWithValue("@password", new PasswordHasher().HashPassword(user.Password));// new PasswordHasher().HashPassword(model.Password));
-            sqlCommand.Parameters.AddWithValue("@state", State.ACTIVO);
-            try{
-                Connection.Open();
-                if(_roleService.Find(user.roleId) == null) return null;
-                int result  = sqlCommand.ExecuteNonQuery();
-                if (result > 0 ){ 
-                    user.Id = GetInsert();
-                    if(_roleUserService.Add(new RoleUser(user.roleId, user.Id)) == null) return null;
+            if (user != null)
+            {
+                //INSERT INTO users OUTPUT INSERTED.* VALUES ('aaaa', 'asdsdad', 1)
+                sqlCommand.CommandText = "INSERT INTO users VALUES(@user_name, @password, @state)";
+                sqlCommand.Parameters.AddWithValue("@user_name", user.Username);
+                sqlCommand.Parameters.AddWithValue("@password", new PasswordHasher().HashPassword(user.Password));// new PasswordHasher().HashPassword(model.Password));
+                sqlCommand.Parameters.AddWithValue("@state", State.ACTIVO);
+                try
+                {
+                    Connection.Open();
+                    if (_roleService.Find(user.roleId) == null) return null;
+                    int result = sqlCommand.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        user.Id = GetInsert();
+                        Console.WriteLine(user.Id);
+                        if (_roleUserService.Add(new RoleUser(user.roleId, user.Id)) == null) return null;
+                        return user;
+                    }
+                    return null;
                 }
-                return user;
-            }catch(Exception e){
-                Console.WriteLine(e.Message);
-                Connection.Close();
-                return null;
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Connection.Close();
+                    return null;
+                }
             }
+
+            return null;
         }
 
         public int GetInsert(){
@@ -71,7 +81,7 @@ namespace testEvolution.Services
 
         public User Find(User model)
         {
-            sqlCommand.CommandText = $"SELECT * FROM users where user_name='{model.Username}' AND state = {Convert.ToInt32(State.ACTIVO)}";
+            sqlCommand.CommandText = $"SELECT * FROM users INNER JOIN users_roles ON users_roles.user_id = dbo.users.id INNER JOIN roles ON users_roles.role_id = roles.id WHERE users.user_name='{model.Username}' AND users.state = {Convert.ToInt32(State.ACTIVO)}";
             Connection.Open();
             reader = sqlCommand.ExecuteReader();
             User user = reader.Read()? new User(reader): null;
@@ -80,12 +90,13 @@ namespace testEvolution.Services
         }
         public User Find(int id)
         {
-            sqlCommand.CommandText = $"SELECT * FROM users where id={id}";
+            sqlCommand.CommandText = $"SELECT * FROM users INNER JOIN users_roles ON users_roles.user_id = dbo.users.id INNER JOIN roles ON users_roles.role_id = roles.id WHERE users.id = {id}";
             try
             {
                 Connection.Open();
                 reader = sqlCommand.ExecuteReader();
                 User user = reader.Read()? new User(reader): null;
+                Console.WriteLine(user);
                 Connection.Close();
                 return user;
             }

@@ -43,5 +43,11 @@ namespace testEvolution.Models.Entities
         public string name {
             get => FirstName + (SecondName==""?" ":$" {SecondName} ")+FirstLastName+ $" {SecondLastName}";
         }
+        public string names {
+            get => FirstName + (SecondName==""?" ":$" {SecondName}");
+        }
+        public string lasnames {
+            get => FirstName + $" {FirstLastName}"+ $" {SecondLastName}";
+        }
     }
 }

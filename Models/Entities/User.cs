@@ -30,6 +30,7 @@ namespace testEvolution.Models.Entities
             Username = reader["user_name"].ToString();
             Password = reader["password"].ToString();
             State = (State)Convert.ToInt32(reader["state"]);
+            roleId = Convert.ToInt32(reader["role_id"]);
         }
     }
 }

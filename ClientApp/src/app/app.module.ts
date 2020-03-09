@@ -16,13 +16,15 @@ import {NgbModule, NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-b
 import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthInterceptor } from './guards/auth.interceptor';
+import { UsuarioComponent } from './pages/usuario/usuario.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     LoginComponent,
-    MapaComponent
+    MapaComponent,
+    UsuarioComponent
   ],
   imports: [
     NgbModule,

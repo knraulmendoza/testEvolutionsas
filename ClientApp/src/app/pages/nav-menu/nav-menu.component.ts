@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { IRole } from 'src/app/interfaces/interface';
+import { IRole, IUser, IPerson } from 'src/app/interfaces/interface';
 import { RoleService } from 'src/app/services/role.service';
 import * as alertify from "alertifyjs";
 import { Router } from '@angular/router';
+import { PersonService } from 'src/app/services/person.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -16,10 +17,18 @@ export class NavMenuComponent implements OnInit{
   roles:IRole[] = []
   edit:boolean = false;
   role:IRole = <IRole>{};
-
-    constructor(private modalService: NgbModal, private roleService: RoleService, private router: Router) { }
+  person:IPerson = <IPerson>{};
+  constructor(private modalService: NgbModal, private roleService: RoleService, private router: Router, private personSer: PersonService) { }
   ngOnInit() {
     this.getRoles();
+    this.getUser();
+  }
+
+  get getRole(){
+    return Number.parseInt(localStorage.getItem('role'));
+  }
+  async getUser(){
+    this.person = await this.personSer.getUser(Number.parseInt(localStorage.getItem('user')));
   }
   async getRoles() {
     this.roles = await this.roleService.getAll();

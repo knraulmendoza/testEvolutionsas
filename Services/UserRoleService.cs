@@ -14,7 +14,7 @@ namespace evolutionPrueba.Services
             if(roleUser == null) return null;
             //INSERT INTO users OUTPUT INSERTED.* VALUES ('aaaa', 'asdsdad', 1)
             sqlCommand.CommandText = "INSERT INTO users_roles VALUES(@user_id, @role_id)";
-            sqlCommand.Parameters.AddWithValue("@user_id", roleUser.Role_id);
+            sqlCommand.Parameters.AddWithValue("@user_id", roleUser.User_id);
             sqlCommand.Parameters.AddWithValue("@role_id", roleUser.Role_id);
             try{
                 Connection.Open();
